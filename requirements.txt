@@ -1,0 +1,10 @@
+openai
+requests
+Pillow
+transformers
+torch
+flask
+nltk
+gtts
+werkzeug
+watchdog
