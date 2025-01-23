@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}Social Media Caption Generator{% endblock %}
+
+{% block content %}
+    <header>
+        <h1><span class="highlight" style="color: #23cca2;">INFOSYS</span> Social Media Tool</h1>
+        <p class="subtitle">Upload an image to generate social media optimized content</p>
+    </header>
+
+    <div class="upload-section">
+        <div id="errorContainer"></div>
+        
+        <div class="upload-box" id="uploadBox">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Drag & Drop your image here</p>
+            <span>or</span>
+            <button class="upload-btn">Choose File</button>
+            <input type="file" hidden id="fileInput" accept="image/*">
+        </div>
+    </div>
+
+    <div id="resultsContainer" class="results-container hidden">
+        <div class="result-section">
+            <h3>Image Preview</h3>
+            <img id="previewImage" src="" alt="" class="preview-image">
+        </div>
+        
+        <div class="result-section">
+            <h3>Alt Text</h3>
+            <p id="altTextResult"></p>
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copyText(document.getElementById('altTextResult').textContent, this)">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+                <button class="action-btn speak-btn" onclick="speakText(document.getElementById('altTextResult').textContent)">
+                    <i class="fas fa-volume-up"></i> Speak
+                </button>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <h3>Context</h3>
+            <p id="contextResult"></p>
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copyText(document.getElementById('contextResult').textContent, this)">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+                <button class="action-btn speak-btn" onclick="speakText(document.getElementById('contextResult').textContent)">
+                    <i class="fas fa-volume-up"></i> Speak
+                </button>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3>Social Media Caption</h3>
+            <p id="socialMediaResult"></p>
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copyText(document.getElementById('socialMediaResult').textContent, this)">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+                <button class="action-btn speak-btn" onclick="speakText(document.getElementById('socialMediaResult').textContent)">
+                    <i class="fas fa-volume-up"></i> Speak
+                </button>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <h3>Sentiment Analysis</h3>
+            <p id="sentimentResult"></p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const previewImage = document.getElementById('previewImage');
+        const errorContainer = document.getElementById('errorContainer');
+
+        uploadBox.addEventListener('click', () => fileInput.click());
+        
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#2c3e50';
+        });
+
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.style.borderColor = '#4a90e2';
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#4a90e2';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            const file = files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showError('Please upload an image file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            showError('Analyzing image...', 'info');
+
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                errorContainer.innerHTML = '';
+                displayResults(data, file);
+            })
+            .catch(error => {
+                showError('Error analyzing image: ' + error.message);
+            });
+        }
+
+        function displayResults(data, file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            document.getElementById('altTextResult').textContent = data.alt_text;
+            document.getElementById('contextResult').textContent = data.context;
+            document.getElementById('socialMediaResult').textContent = data.caption;
+            document.getElementById('sentimentResult').textContent = `Sentiment: ${data.sentiment.category} (${data.sentiment.score}%)`;
+
+            resultsContainer.classList.remove('hidden');
+        }
+
+        function showError(message, type = 'error') {
+            errorContainer.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+    });
+</script>
+{% endblock %} 

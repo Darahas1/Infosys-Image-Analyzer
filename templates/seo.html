@@ -1,0 +1,347 @@
+{% extends "base.html" %}
+
+{% block title %}SEO Description Generator{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .seo-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .result-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .result-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .result-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .result-header i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+
+    .result-content {
+        margin-top: 1rem;
+        line-height: 1.6;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .result-content h4 {
+        margin-top: 1.5rem;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+    }
+
+    .result-content ul {
+        padding-left: 20px;
+        list-style-type: disc;
+    }
+
+    .result-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    .metrics-bar {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding: 0.5rem;
+        background: #f8fafc;
+        border-radius: 6px;
+        font-size: 0.9rem;
+    }
+
+    .metric {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .metric i {
+        color: var(--primary-color);
+    }
+
+    .warning {
+        color: #e11d48;
+    }
+
+    .success {
+        color: #059669;
+    }
+
+    .product-description {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .section-heading {
+        color: #2c3e50;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 1.5rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #23cca2;
+    }
+
+    .section-heading:first-child {
+        margin-top: 0;
+    }
+
+    .description-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .description-list li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.6;
+        color: #4a5568;
+    }
+
+    .description-list li::before {
+        content: "•";
+        color: #23cca2;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+
+    .description-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .description-section:last-child {
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="seo-container">
+    <header>
+        <h1><span class="highlight">INFOSYS</span> SEO Tool</h1>
+        <p class="subtitle">Generate SEO-optimized product descriptions and titles</p>
+    </header>
+
+    <div class="upload-section">
+        <div id="errorContainer"></div>
+        
+        <div class="upload-box" id="uploadBox">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Drag & Drop your product image here</p>
+            <span>or</span>
+            <button class="upload-btn">Choose File</button>
+            <input type="file" hidden id="fileInput" accept="image/*">
+        </div>
+    </div>
+
+    <div id="resultsContainer" class="results-container hidden">
+        <div class="result-card">
+            <div class="result-header">
+                <i class="fas fa-image"></i>
+                <h3>Product Preview</h3>
+            </div>
+            <div class="result-content">
+                <img id="previewImage" src="" alt="" class="preview-image">
+            </div>
+        </div>
+        
+        <div class="result-card">
+            <div class="result-header">
+                <i class="fas fa-list-alt"></i>
+                <h3>SEO Optimized Product Description</h3>
+            </div>
+            <div class="result-content">
+                <div class="product-description" id="descriptionResult">
+                    <!-- Description will be inserted here -->
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copyText(document.getElementById('descriptionResult').textContent, this)">
+                    <i class="fas fa-copy"></i> Copy Description
+                </button>
+                <button class="action-btn speak-btn" onclick="speakText(document.getElementById('descriptionResult').textContent)">
+                    <i class="fas fa-volume-up"></i> Speak
+                </button>
+            </div>
+        </div>
+
+        <div class="result-card">
+            <div class="result-header">
+                <i class="fas fa-tag"></i>
+                <h3>SEO Optimized Product Title</h3>
+            </div>
+            <div class="result-content" id="seoTitleResult"></div>
+            <div class="metrics-bar">
+                <div class="metric" id="characterCount">
+                    <i class="fas fa-text-width"></i>
+                    <span>0/150 characters</span>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copyText(document.getElementById('seoTitleResult').textContent, this)">
+                    <i class="fas fa-copy"></i> Copy Title
+                </button>
+                <button class="action-btn speak-btn" onclick="speakText(document.getElementById('seoTitleResult').textContent)">
+                    <i class="fas fa-volume-up"></i> Speak
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const previewImage = document.getElementById('previewImage');
+        const errorContainer = document.getElementById('errorContainer');
+
+        uploadBox.addEventListener('click', () => fileInput.click());
+        
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#2c3e50';
+        });
+
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.style.borderColor = '#4a90e2';
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#4a90e2';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            const file = files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showError('Please upload an image file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            showError('Analyzing image...', 'info');
+
+            fetch('/analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                errorContainer.innerHTML = '';
+                displayResults(data, file);
+            })
+            .catch(error => {
+                showError('Error analyzing image: ' + error.message);
+            });
+        }
+
+        function displayResults(data, file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            document.getElementById('descriptionResult').textContent = data.seo_description.description;
+            document.getElementById('seoTitleResult').textContent = data.seo_description.title;
+
+            // Update character count
+            const titleLength = data.seo_description.title.length;
+            const characterCount = document.getElementById('characterCount');
+            characterCount.innerHTML = `<i class="fas fa-text-width"></i><span>${titleLength}/150 characters</span>`;
+            
+            if (titleLength > 150) {
+                characterCount.classList.add('warning');
+                characterCount.classList.remove('success');
+            } else {
+                characterCount.classList.add('success');
+                characterCount.classList.remove('warning');
+            }
+
+            resultsContainer.classList.remove('hidden');
+
+            // Format and display the description
+            const descriptionContainer = document.getElementById('descriptionResult');
+            const sections = data.seo_description.sections;
+            
+            let formattedHTML = '';
+            
+            // Format About section
+            if (sections.about) {
+                formattedHTML += formatSection(sections.about);
+            }
+            
+            // Format Technical section
+            if (sections.technical) {
+                formattedHTML += formatSection(sections.technical);
+            }
+            
+            // Format Additional section
+            if (sections.additional) {
+                formattedHTML += formatSection(sections.additional);
+            }
+            
+            descriptionContainer.innerHTML = formattedHTML;
+        }
+
+        function formatSection(sectionText) {
+            const [title, ...points] = sectionText.split('\n').filter(line => line.trim());
+            const formattedPoints = points
+                .filter(point => point.trim())
+                .map(point => `<li>${point.trim().replace(/^[•-]\s*/, '')}</li>`)
+                .join('');
+                
+            return `
+                <div class="description-section">
+                    <h3 class="section-heading">${title}</h3>
+                    <ul class="description-list">
+                        ${formattedPoints}
+                    </ul>
+                </div>
+            `;
+        }
+
+        function showError(message, type = 'error') {
+            errorContainer.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+    });
+</script>
+{% endblock %} 
