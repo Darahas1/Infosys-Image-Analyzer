@@ -10,14 +10,14 @@ INFOSYS Image Analysis Suite is a sophisticated web application that leverages c
 
 ## ✨ Key Features
 
-### 🔍 General Analysis Tool
+### 📊 General Analysis Tool
 - **Smart Alt Text Generation**: Creates detailed, context-aware alt text
 - **Contextual Analysis**: Provides in-depth image context analysis
 - **Enhanced Descriptions**: Generates comprehensive image descriptions
 - **Accessibility Features**: Built-in text-to-speech functionality
 - **Quick Actions**: One-click copy functionality for all generated content
 
-### 📊 SEO Description Generator
+### 🔍 SEO Description Generator
 - **Product Descriptions**: Creates SEO-optimized product descriptions
 - **Title Generation**: Generates keyword-rich product titles
 - **Structured Content**:
@@ -112,7 +112,7 @@ INFOSYS Image Analysis Suite is a sophisticated web application that leverages c
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
-[To be added]
+MIT License
 
 ## 🙏 Acknowledgments
 - OpenAI for their powerful GPT models
