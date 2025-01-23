@@ -1,4 +1,4 @@
-# INFOSYS Image Analysis Suite
+# The Image Analyzer: AI-Powered Image Analysis Suite
 
 <p align="center">
   <!-- Add your project logo here if you have one -->
