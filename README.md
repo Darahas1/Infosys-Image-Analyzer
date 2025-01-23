@@ -63,8 +63,7 @@ INFOSYS Image Analysis Suite is a sophisticated web application that leverages c
 ### Setup Steps
 
 1. **Clone the Repository**
-    git clone https://github.com/yourusername/infosys-image-analysis.git
-
+    https://github.com/Darahas1/Infosys-Image-Analyzer.git
     ##### cd infosys-image-analysis
 
 2. **Create and activate virtual environment**
