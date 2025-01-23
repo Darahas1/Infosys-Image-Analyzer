@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}INFOSYS Image Analyzer{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #23cca2;
+            --secondary-color: #2c3e50;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: #1a1a1a;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            padding-top: 4rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .upload-box {
+            border: 2px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            text-align: center;
+            background-color: var(--card-background);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-box:hover {
+            border-color: var(--secondary-color);
+            background-color: #f8fafc;
+        }
+
+        .upload-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background-color: #1ba686;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background-color: #3a80d2;
+        }
+
+        .speak-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .speak-btn:hover {
+            background-color: #1a2c3d;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.65rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .result-section {
+            background-color: var(--card-background);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .result-section p {
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+        }
+
+        .error {
+            background-color: #fee2e2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+
+        .info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .results-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <a href="/" class="back-btn" style="color: #000;">
+        <i class="fas fa-arrow-left"></i> Back to Tools 
+    </a>
+    
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        function copyText(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+        function speakText(text) {
+            fetch('/text-to-speech', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: text })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const audio = new Audio(URL.createObjectURL(blob));
+                audio.play();
+            })
+            .catch(err => {
+                console.error('Failed to speak text: ', err);
+                alert('Failed to generate speech. Please try again.');
+            });
+        }
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html> 
