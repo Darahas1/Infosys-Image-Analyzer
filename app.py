@@ -1,3 +1,4 @@
+# Necessary imports
 from flask import Flask, request, jsonify, render_template, send_file
 from flask_cors import CORS
 from PIL import Image
@@ -49,7 +50,7 @@ def generate_alt_text(image):
         # Generate alt text
         out = model.generate(**inputs)
         
-        # Decode the generated caption
+        # Decode the generated text
         alt_text = processor.decode(out[0], skip_special_tokens=True)
         
         return alt_text
@@ -70,7 +71,7 @@ def generate_context(alt_text):
             temperature=0.7
         )
         context = response.choices[0].message.content.strip()
-        # Truncate to roughly 70 words if needed
+        # Truncate to roughly 70 words (to limit content size)
         words = context.split()
         if len(words) > 70:
             context = ' '.join(words[:70]) + '...'
@@ -92,7 +93,7 @@ def enhance_context(context):
             temperature=0.7
         )
         enhanced = response.choices[0].message.content.strip()
-        # Truncate to roughly 50 words if needed
+        # Truncate to roughly 50 words (to limit text size here too)
         words = enhanced.split()
         if len(words) > 50:
             enhanced = ' '.join(words[:50]) + '...'
@@ -121,7 +122,7 @@ def social_media_caption(context):
 def analyze_sentiment(text):
     """Analyzes the sentiment of the text using VADER Sentiment Analyzer."""
     try:
-        # Initialize VADER
+        # Initialize VADER for sentiment analysis
         sid = SentimentIntensityAnalyzer()
         
         # Get sentiment scores
@@ -250,7 +251,7 @@ Follow these exact requirements:
         for section in sections:
             if ':' in section:
                 title, content = section.split(':', 1)
-                # Ensure bullet points are properly formatted
+                # Format bullet points properly
                 bullet_points = [point.strip() for point in content.split('\n') if point.strip()]
                 formatted_points = [f"• {point.lstrip('•').strip()}" for point in bullet_points]
                 formatted_section = f"{title}:\n" + '\n'.join(formatted_points)
@@ -276,7 +277,7 @@ Follow these exact requirements:
             'sections': {}
         }
 
-# Routes
+# All the Routes
 @app.route('/')
 def landing():
     return render_template('landing.html')
@@ -299,7 +300,7 @@ def text_to_speech():
     if not text:
         return jsonify({'error': 'No text provided'}), 400
 
-    # Create a temporary file for the audio
+    # Temporary file for the audio
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3')
     tts = gTTS(text=text, lang='en')
     tts.save(temp_file.name)
