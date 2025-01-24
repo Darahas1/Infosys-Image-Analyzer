@@ -68,6 +68,11 @@
         <div class="result-section">
             <h3>Sentiment Analysis</h3>
             <p id="sentimentResult"></p>
+            <button class="action-btn" id="detailedScoresBtn">Show Detailed Scores</button>
+            <div id="detailedScores" class="hidden">
+                <h4>Detailed Sentiment Scores</h4>
+                <div id="detailedScoresResult" class="detailed-scores"></div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -148,6 +153,32 @@
             document.getElementById('sentimentResult').textContent = `Sentiment: ${data.sentiment.category} (${data.sentiment.score}%)`;
 
             resultsContainer.classList.remove('hidden');
+
+            // Add event listener for the detailed scores button
+            document.getElementById('detailedScoresBtn').addEventListener('click', function() {
+                const detailedScoresDiv = document.getElementById('detailedScores');
+                const detailedScoresResult = document.getElementById('detailedScoresResult');
+
+                if (detailedScoresDiv.classList.contains('hidden')) {
+                    // Show detailed scores
+                    detailedScoresDiv.classList.remove('hidden');
+
+                    // Extract and format the sentiment scores
+                    const sentiment = data.sentiment.detailed_scores;
+                    detailedScoresResult.innerHTML = `
+                        <p><strong>Compound:</strong> ${(sentiment.compound * 100).toFixed(2)}%</p>
+                        <p><strong>Negative:</strong> ${(sentiment.neg * 100).toFixed(2)}%</p>
+                        <p><strong>Neutral:</strong> ${(sentiment.neu * 100).toFixed(2)}%</p>
+                        <p><strong>Positive:</strong> ${(sentiment.pos * 100).toFixed(2)}%</p>
+                    `;
+
+                    this.textContent = 'Hide Detailed Scores'; // Change button text
+                } else {
+                    // Hide detailed scores
+                    detailedScoresDiv.classList.add('hidden');
+                    this.textContent = 'Show Detailed Scores'; // Change button text back
+                }
+            });
         }
 
         function showError(message, type = 'error') {
