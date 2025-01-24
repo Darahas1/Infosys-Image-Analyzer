@@ -6,12 +6,12 @@
 </p>
 
 ## 🌟 Overview
-INFOSYS Image Analysis Suite is a sophisticated web application that leverages cutting-edge AI technologies to provide comprehensive image analysis tools. The platform is designed to serve multiple use cases, from SEO optimization to social media content generation, making it an invaluable tool for digital marketers, content creators, and businesses.
+This Image Analysis Suite is a sophisticated web application that leverages cutting-edge AI technologies to provide comprehensive image analysis tools. The platform is designed to serve multiple use cases, from SEO optimization to social media content generation, making it an invaluable tool for digital marketers, content creators, and businesses.
 
 ## ✨ Key Features
 
 ### 📊 General Analysis Tool
-- **Smart Alt Text Generation**: Creates detailed, context-aware alt text
+- **Alt Text Generation**: Creates detailed, context-aware alt text using BLIP
 - **Contextual Analysis**: Provides in-depth image context analysis
 - **Enhanced Descriptions**: Generates comprehensive image descriptions
 - **Accessibility Features**: Built-in text-to-speech functionality
@@ -30,7 +30,7 @@ INFOSYS Image Analysis Suite is a sophisticated web application that leverages c
 ### 📱 Social Media Tool
 - **Platform-Optimized Content**: Generates platform-specific captions
 - **Hashtag Generation**: Creates relevant, trending hashtags
-- **Social Alt Text**: Specialized alt text for social platforms
+- **Social Alt Text**: Specialized alt text for social platforms, again using BLIP
 - **Engagement Focus**: Creates engagement-optimized descriptions
 - **Accessibility**: Text-to-speech and copy functionality
 
@@ -84,7 +84,7 @@ INFOSYS Image Analysis Suite is a sophisticated web application that leverages c
     python app.py
 
 6. **Access the application**
-    Open your browser and navigate to http://localhost:5000
+    Open your browser and navigate to http://localhost:5000 (default url)
 
 ## 📁 Project Structure
 
@@ -112,7 +112,7 @@ INFOSYS Image Analysis Suite is a sophisticated web application that leverages c
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
-MIT License
+MIT License - Darahas1
 
 ## 🙏 Acknowledgments
 - OpenAI for their powerful GPT models
