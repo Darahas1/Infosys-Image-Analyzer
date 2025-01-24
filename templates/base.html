@@ -169,6 +169,31 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+        .hidden {
+            display: none;
+        }
+
+        .detailed-scores {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            color: #343a40;
+        }
+
+        .detailed-scores h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
     {% block extra_styles %}{% endblock %}
 </head>
